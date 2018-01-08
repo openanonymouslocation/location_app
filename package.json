@@ -29,6 +29,7 @@
     "preset": "react-native"
   },
   "dependencies": {
+    "axios": "^0.17.1",
     "color": "1.0.3",
     "lodash": "4.13.1",
     "moment": "2.13.0",

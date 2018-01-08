@@ -22,48 +22,67 @@ import {
   ListItem
 } from "native-base";
 const Item = Picker.Item;
-const datas = [
-  {
-    route: "RegularActionSheet",
-    text: "ID: 64833c2e-e197-11e7-80c1-9a214cf093ae"
-  }
-];
 
-const datas1 = [
-
-  {
-    route: "IconActionSheet",
-    text: "GPS data every (seconds):"
-  }
-];
-const datas3 = [
-
-
-  {
-    route: "IconActionSheet",
-    text: "Ofuscate coordinates (meters):"
-  }
-];
-
-const datas2 = [
-
-
-  {
-    route: "IconActionSheet",
-    text: "Publish only using wifi"
-  }
-];
 
 import styles from "./styles";
 
 class NHPicker extends Component {
+
+  static defaultProps = {
+      interval: 10,
+      fastestInterval: 0,
+      activitiesInterval: 0,
+      startOnBoot: false,
+      deviceId:"64833c2e-e197-11e7-80c1-9a214cf093ae",
+      ofuscate:0
+    };
+
+
   constructor(props) {
      super(props);
+
      this.state = {
-       selected2: undefined,
-         checkbox1: true
+      selected2: undefined,
+      checkbox1: true,
+      deviceId:this.props.deviceId
      };
+
+    this.onPress = this.onPress.bind(this);
+   this.onChange = this.onChange.bind(this);
+   this.changeDeviceID();
+
+
    }
+
+
+    onPress(key) {
+       this.props.onEdit(key);
+     }
+
+
+     onChange(val, key) {
+       this.props.onChange(key, val);
+     }
+
+     changeDeviceID() {
+       var s = [];
+        var hexDigits = "0123456789abcdef";
+        for (var i = 0; i < 36; i++) {
+          s[i] = hexDigits.substr(Math.floor(Math.random() * 0x10), 1);
+        }
+        s[14] = "4"; // bits 12-15 of the time_hi_and_version field to 0010
+        s[19] = hexDigits.substr((s[19] & 0x3) | 0x8, 1); // bits 6-7 of the clock_seq_hi_and_reserved to 01
+        s[8] = s[13] = s[18] = s[23] = "-";
+
+        var uuid = s.join("");
+       this.setState({
+         deviceId: uuid
+       });
+
+
+
+     }
+
    toggleSwitch1() {
      this.setState({
        checkbox1: !this.state.checkbox1
@@ -75,6 +94,20 @@ class NHPicker extends Component {
      });
    }
   render() {
+
+    const {
+          interval,
+          fastestInterval,
+          activitiesInterval,
+          locationProvider,
+          startOnBoot,
+          deviceId,
+          ofuscate
+        } = this.props;
+
+
+
+
     return (
       <Container style={styles.container}>
         <Header  style={styles.header}>
@@ -93,35 +126,36 @@ class NHPicker extends Component {
         </Header>
 
         <Content style={{backgroundColor:'#fff'}}>
-          <List
-            dataArray={datas}
-            renderRow={data =>
-              <ListItem
-                button
-                onPress={() => this.props.navigation.navigate(data.route)}
-              >
+          <List>
+          <ListItem itemDivider>
+          <Left>
+            <Text>{'Device id:'}</Text>
+          </Left>
+          </ListItem>
+              <ListItem>
                 <Left>
                   <Text>
-                    {data.text}
+                    {this.state.deviceId}
                   </Text>
                 </Left>
                 <Right>
-                  <Icon name="refresh" style={{fontSize:30, color: "#3E4967" }} />
+                  <Icon  onPress={() => this.changeDeviceID()} name="refresh" style={{fontSize:30, color: "#3E4967" }} />
                 </Right>
-              </ListItem>}
-          />
+              </ListItem>
+          </List>
 
 
-          <List
-            dataArray={datas2}
-            renderRow={data =>
+          <List>
+          <ListItem itemDivider>
+          <Left>
+            <Text>{'Send locations:'}</Text>
+          </Left>
+          </ListItem>
               <ListItem
-               button onPress={() => this.toggleSwitch1()}
-
-              >
+               button onPress={() => this.toggleSwitch1()}>
                 <Left>
                   <Text>
-                    {data.text}
+                    {'Syncronized'}
                   </Text>
                 </Left>
                 <Right>
@@ -130,8 +164,8 @@ class NHPicker extends Component {
                 onPress={() => this.toggleSwitch1()}
                 />
                 </Right>
-              </ListItem>}
-          />
+              </ListItem>
+          </List>
 
           <Form style={{paddingLeft:25, paddingTop:15,borderBottomColor: '#f7f7f7',backgroundColor:'#fff'}}>
           <Text>
@@ -182,7 +216,7 @@ class NHPicker extends Component {
         </Content>
         <Footer style={styles.footer}>
           <FooterTab>
-          <Button  style={styles.footer} active full   onPress={() => this.props.navigation.navigate("DrawerOpen")}>
+          <Button  style={styles.footer} active full   onPress={() => this.props.navigation.navigate("Geolocations",{deviceId:this.state.deviceId})}>
             <Icon name='ios-checkmark-circle' />
             <Text>Done</Text>
           </Button>
