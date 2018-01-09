@@ -10,6 +10,7 @@ Android APP to publish geolocation into OpenAnonymousLocation platform
 
 
 ### Installation
+- Install [NodeJS](https://nodejs.org/)
 
 ```
 git clone https://github.com/openanonymouslocation/location_app.git
@@ -20,6 +21,7 @@ cd location_app
 
 react-native run-android
 ```
+Refer to this documentation to [generate a signed apk] https://facebook.github.io/react-native/docs/signed-apk-android.html
 
 ### Credits
 
