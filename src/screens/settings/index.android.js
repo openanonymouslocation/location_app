@@ -21,6 +21,9 @@ import {
   FooterTab,
   ListItem
 } from "native-base";
+
+import DeviceInfo from 'react-native-device-info';
+
 const Item = Picker.Item;
 
 
@@ -33,7 +36,7 @@ class NHPicker extends Component {
       fastestInterval: 0,
       activitiesInterval: 0,
       startOnBoot: false,
-      deviceId:"64833c2e-e197-11e7-80c1-9a214cf093ae",
+      deviceId:DeviceInfo.getUniqueID(),
       ofuscate:0
     };
 
@@ -42,9 +45,10 @@ class NHPicker extends Component {
      super(props);
 
      this.state = {
-      selected2: undefined,
-      checkbox1: true,
-      deviceId:this.props.deviceId
+      ofuscate: 0,
+      interval:10,
+      syncmode:true,
+      deviceId:DeviceInfo.getUniqueID()
      };
 
     this.onPress = this.onPress.bind(this);
@@ -79,20 +83,27 @@ class NHPicker extends Component {
          deviceId: uuid
        });
 
-
-
      }
 
    toggleSwitch1() {
      this.setState({
-       checkbox1: !this.state.checkbox1
+       syncmode: !this.state.syncmode
      });
    }
-   onValueChange2(value: string) {
+   onValueChangeOfuscate(value) {
+
      this.setState({
-       selected2: value
+       ofuscate: value
      });
    }
+
+
+   onValueChangeInterval(value) {
+     this.setState({
+       interval: value
+     });
+   }
+
   render() {
 
     const {
@@ -102,6 +113,8 @@ class NHPicker extends Component {
           locationProvider,
           startOnBoot,
           deviceId,
+          syncmode,
+          message,
           ofuscate
         } = this.props;
 
@@ -143,8 +156,6 @@ class NHPicker extends Component {
                 </Right>
               </ListItem>
           </List>
-
-
           <List>
           <ListItem itemDivider>
           <Left>
@@ -160,7 +171,7 @@ class NHPicker extends Component {
                 </Left>
                 <Right>
                 <CheckBox  style={{borderColor:"#3E4967" }}
-                checked={this.state.checkbox1}
+                checked={this.state.syncmode}
                 onPress={() => this.toggleSwitch1()}
                 />
                 </Right>
@@ -178,9 +189,8 @@ class NHPicker extends Component {
         headerBackButtonTextStyle={{ color: "#fff" }}
         headerTitleStyle={{ color: "#fff" }}
          placeholder="Select One"
-         selectedValue={this.state.selected2}
-         onValueChange={this.onValueChange2.bind(this)}
-        >
+         selectedValue={this.state.interval}
+         onValueChange={this.onValueChangeInterval.bind(this)}>
          <Item label="10s" value="10" />
          <Item label="20s" value="20" />
          <Item label="40s" value="40" />
@@ -200,23 +210,22 @@ class NHPicker extends Component {
       headerBackButtonTextStyle={{ color: "#fff" }}
       headerTitleStyle={{ color: "#fff" }}
        placeholder="Select One"
-       selectedValue={this.state.selected2}
-       onValueChange={this.onValueChange2.bind(this)}
-      >
+       selectedValue={this.state.ofuscate}
+       onValueChange={this.onValueChangeOfuscate.bind(this)}>
        <Item label="0m" value="0" />
        <Item label="10m" value="10" />
        <Item label="20m" value="20" />
      <Item label="30m" value="30" />
-
       </Picker>
       </Form>
-
-
-
         </Content>
         <Footer style={styles.footer}>
           <FooterTab>
-          <Button  style={styles.footer} active full   onPress={() => this.props.navigation.navigate("Geolocations",{deviceId:this.state.deviceId})}>
+          <Button  style={styles.footer} active full   onPress={() => this.props.navigation.navigate("Geolocations",{
+            deviceId:this.state.deviceId,
+            interval:this.state.interval,
+            ofuscate:this.state.ofuscate
+          })}>
             <Icon name='ios-checkmark-circle' />
             <Text>Done</Text>
           </Button>

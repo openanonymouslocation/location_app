@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { StyleSheet, View, Alert, Dimensions} from "react-native";
+import { StyleSheet, View, Alert, Dimensions,Linking} from "react-native";
 import axios from 'axios';
 import BackgroundGeolocation from 'react-native-mauron85-background-geolocation';
 import {
@@ -17,11 +17,13 @@ import {
   Right,
   Body
 } from "native-base";
-
+import DeviceInfo from 'react-native-device-info';
 import styles from "./styles";
 
 
 
+const _urlServer='http://openanonymouslocation.org/api/v1/insertlocations/';
+const _urlMap='http://openanonymouslocation.org/map.html?device=';
 class Geolocations extends Component {
 
 
@@ -33,9 +35,12 @@ class Geolocations extends Component {
       locations: [],
       stationaries: [],
       isRunning: false,
-      deviceId:'test_openanomynouslocation_app',
+      deviceId:DeviceInfo.getUniqueID() || 'app-openanonymouslocation-test' ,
       sessionId:'64845c2e-e134-12e7-80c1-9a214cf098ae',
-      totalLocations:0
+      totalLocations:0,
+      ofuscate:0,
+      message:'',
+      interval:10
     };
 
     //this.goToSettings = this.goToSettings.bind(this);
@@ -44,8 +49,7 @@ class Geolocations extends Component {
 
 
   componentDidMount() {
-      console.log('map did mount');
-
+     
       BackgroundGeolocation.configure({
       desiredAccuracy: 10,
       stationaryRadius: 50,
@@ -61,11 +65,30 @@ class Geolocations extends Component {
       activitiesInterval: 10000,
       stopOnStillActivity: false,
       autoSync: true,
-      url: 'http://openanonymouslocation.org/api/v1/insertlocations/',
-      httpHeaders: {
-        'X-FOO': 'bar'
-      }
+      url: _urlServer
     });
+
+
+   
+    if(this.props && 
+      this.props.navigation && 
+      this.props.navigation.state && 
+      this.props.navigation.state.params &&
+      this.props.navigation.state.params.deviceId){
+      this.setState({ deviceId: this.props.navigation.state.params.deviceId });      
+     
+  }
+
+  
+  if(this.props && 
+    this.props.navigation && 
+    this.props.navigation.state && 
+    this.props.navigation.state.params &&
+    this.props.navigation.state.params.ofuscate){      
+    this.setState({ ofuscate: this.props.navigation.state.params.ofuscate });        
+  }
+
+
 
       function logError(msg) {
         console.log(`[ERROR] getLocations: ${msg}`);
@@ -100,18 +123,12 @@ class Geolocations extends Component {
       );
 
       BackgroundGeolocation.on('start', () => {
-
-        console.log('[DEBUG] BackgroundGeolocation has been started');
+        
+        console.log('[DEBUG] BackgroundGeolocation has been started!!');
         this.setState({ isRunning: true });
-        if(this.state && this.state.navigation && this.state.navigation.state && this.state.navigation.state.params.deviceId){
-            this.setState({ deviceId: this.state.navigation.state.params.deviceId });
-          //test_openanomynouslocation_app
-        }else{
-          console.info(this.state.deviceId);
-        }
-        //console.info(this.state.navigation.state.params.deviceId);
-      // this.setState({ locations:[] });
-const _sessionId=this.changeUUIID();
+        
+        this.setState({ locations: []});      
+      const _sessionId=this.changeUUIID();
          this.setState({ sessionId:_sessionId });
       });
 
@@ -149,7 +166,6 @@ const _sessionId=this.changeUUIID();
 
       BackgroundGeolocation.on('location', location => {
         console.log('[DEBUG] BackgroundGeolocation locations', location);
-        console.log("holaaaaa000");
 
         BackgroundGeolocation.startTask(taskKey => {
           requestAnimationFrame(() => {
@@ -176,22 +192,41 @@ const _sessionId=this.changeUUIID();
               totalLocations:locations.length
             });
 
-            console.info("holaaaaa");
-            console.info(this.state);
-//console.info(this.state.navigation.state.params.deviceId);
-          //  const deviceId=this.state.deviceId || this.changeUUIID();
+            //console.info(location);
+            
 
-  console.log(this.state.sessionId);
-//  console.log(deviceId);
+
+            const _newLongitude=location.longitude;
+            
+            _newLongitude=_newLongitude + parseFloat(this.state.ofuscate * 0.00001);
+
+           
+            const that=this;
+            axios.get(_urlServer+this.state.deviceId, {
+                    params: {
+                      session: this.state.sessionId,
+                      lat:location.latitude,
+                      lon:_newLongitude,
+                      timestamp:location.time
+                    }
+                  })
+                  .then(function (response) {
+                    that.setState({ message: '' });
+                  })
+                  .catch(function (error) {
+                  
+                    that.setState({ message: error });
+                  });
+
+
 
             }
             BackgroundGeolocation.endTask(taskKey);
           });
         });
 
-        console.info("holaaaaa111");
-      });
 
+      });
 
 
       BackgroundGeolocation.on('foreground', () => {
@@ -244,8 +279,6 @@ const _sessionId=this.changeUUIID();
           return false;
         }
         if (authorization == BackgroundGeolocation.auth.AUTHORIZED) {
-          // calling start will also ask user for permission if needed
-          // permission error will be handled in permisision_denied event
           BackgroundGeolocation.start();
         } else {
           // Location services are disabled
@@ -292,24 +325,28 @@ const _sessionId=this.changeUUIID();
         <Content padder>
           <Text></Text>
           <Left>
-
           <Button style={isRunning ? styles.button2 : styles.button1} onPress={this.toggleTracking}>
                         <Icon name={isRunning ? 'pause' : 'play'} style={isRunning ? styles.button2 : styles.button1} />
                         <Text>{isRunning ? 'Stop capture' : 'Start Capture'}</Text>
                       </Button>
           </Left>
+          <Left>
+          <Badge style={{ backgroundColor: '#aaaaaa',marginTop: 15 }} enable={this.state.isRunning}>
+            <Text style={{ color: 'white' }} >Published geolocations: {this.state.totalLocations}</Text>
+          </Badge>
+          </Left>
 
           <Left>
-          <Badge info style={styles.mb} enable={this.state.isRunning}>
-            <Text>Published geolocations: {this.state.totalLocations}</Text>
-          </Badge>
+         
+            <Text style={{marginTop: 5, color: 'red' }} >{this.state.message}</Text>
+          
+          </Left>
 
-  </Left>
           <Right>
-          <Body>
-
-            <Title>Default</Title>
+          <Body style={{flex:1}}>
+          <Button style={{marginTop:50,height: 25}} bordered info  onPress={ ()=>{ Linking.openURL(_urlMap + this.state.deviceId)}} >
             <Text>View your Geolocations</Text>
+            </Button> 
           </Body>
           </Right>
         </Content>

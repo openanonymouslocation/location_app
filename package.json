@@ -37,6 +37,7 @@
     "prop-types": "^15.5.10",
     "react": "16.0.0",
     "react-native": "0.51.0",
+    "react-native-device-info": "^0.13.0",
     "react-native-maps": "^0.17.1",
     "react-native-mauron85-background-geolocation": "^0.4.1",
     "react-native-vector-icons": "4.3.0",
