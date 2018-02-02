@@ -18,10 +18,20 @@ import iconTheme from "./Icon";
 import listItemTheme from "./ListItem";
 import formTheme from "./Form";
 import variable from "./../variables/platform";
+import cardTheme from "./Card";
+import cardItemTheme from "./CardItem";
 
 export default (variables = variable) => {
   const theme = {
     variables,
+
+    "NativeBase.Card": {
+      ...cardTheme(variables)
+    },
+
+    "NativeBase.CardItem": {
+      ...cardItemTheme(variables)
+    },
     "NativeBase.Left": {
       ...leftTheme(variables)
     },

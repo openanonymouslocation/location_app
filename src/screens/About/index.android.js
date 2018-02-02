@@ -42,14 +42,14 @@ class HeaderNB extends Component {
           <Left>
 
           <Text style={{fontSize:18,padding:10}}>
-{'OpenAnonymousLocation  is a collaborative Open Source project to publish and visualize geolocations!'}
+            OpenAnonymousLocation  is a collaborative Open Source project to publish and visualize geolocations!
           </Text>
           <Text style={{fontSize:18,padding:10}}>
-            {'More Info:'}
+            More Info:
           </Text>
 
           <Text style={{fontSize:18,padding:10}}>
-            {'http://openanonymouslocation.org'}
+            http://openanonymouslocation.org
           </Text>
           </Left>
         </Content>

@@ -3,26 +3,42 @@ const { Dimensions, Platform } = React;
 const deviceHeight = Dimensions.get("window").height;
 
 export default {
+  container: {
+    justifyContent: 'space-between'
+  },
   imageContainer: {
     flex: 1,
-    width: null,
-    height: null
+    padding: 20
   },
-  logoContainer: {
+  containerLogo: {
+    paddingTop: 15,
     flex: 1,
-    marginTop: deviceHeight / 8,
-    marginBottom: 30
+    alignItems: "center",
   },
   logo: {
-    position: "absolute",
-    left: Platform.OS === "android" ? 40 : 50,
-    top: Platform.OS === "android" ? 35 : 60,
+
     width: 280,
     height: 100
   },
   text: {
     color: "#D8D8D8",
     bottom: 6,
-    marginTop: 5
+    marginTop: 5,
+    lineHeight: 25,
+  },
+  containerSubtitle: {
+    flex: 1,
+    alignItems: "center",
+    backgroundColor: "transparent"
+  },
+  containerButton: {
+    flex: 1
+  },
+  disclaimerContainer: {
+    flex: 3,
+
+  },
+  disclaimerBody: {
+    padding: 5
   }
 };

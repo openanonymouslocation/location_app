@@ -10,6 +10,8 @@ import com.facebook.react.shell.MainReactPackage;
 import com.facebook.soloader.SoLoader;
 import com.marianhello.react.BackgroundGeolocationPackage;
 import com.learnium.RNDeviceInfo.RNDeviceInfo;
+import com.rnfs.RNFSPackage;
+
 import java.util.Arrays;
 import java.util.List;
 
@@ -27,7 +29,8 @@ public class MainApplication extends Application implements ReactApplication {
           new MainReactPackage(),
 		      new BackgroundGeolocationPackage(),
           new RNDeviceInfo(),
-          new VectorIconsPackage()
+          new VectorIconsPackage(),
+          new RNFSPackage()
       );
     }
 

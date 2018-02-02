@@ -6,3 +6,7 @@ project(':react-native-mauron85-background-geolocation').projectDir = new File(r
 include ':app'
 include ':react-native-device-info'
 project(':react-native-device-info').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-device-info/android')
+
+include ':react-native-fs'
+project(':react-native-fs').projectDir = new File(settingsDir, '../node_modules/react-native-fs/android')
+
