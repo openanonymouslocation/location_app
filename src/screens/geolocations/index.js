@@ -22,7 +22,7 @@ import styles from "./styles";
 
 
 
-const _urlServer='http://openanonymouslocation.org/api/v1/insertlocations/';
+const _urlServer = 'http://openanonymouslocation.org/api/v1/insertlocations/';
 const _urlMap='http://openanonymouslocation.org/map.html?device=';
 class Geolocations extends Component {
 
@@ -44,7 +44,7 @@ class Geolocations extends Component {
     };
 
     //this.goToSettings = this.goToSettings.bind(this);
-    this.changeUUIID= this.changeUUIID.bind(this);
+    this.changeUUIID = this.changeUUIID.bind(this);
   }
 
 

@@ -10,9 +10,7 @@ import {
   Left,
   Right,
   Body,
-  Text,
-  ListItem,
-  List
+  Text
 } from "native-base";
 
 

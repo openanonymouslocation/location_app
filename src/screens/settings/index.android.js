@@ -12,8 +12,6 @@ import {
   Item as FormItem,
   Picker,
   Form,
-  Input,
-  Label,
   Body,
   Left,
   List,
